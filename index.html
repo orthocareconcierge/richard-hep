@@ -406,10 +406,16 @@ body {
 
     <div id="today-tab">
       <!-- DAILY SECTION -->
-      <div class="section-label">Today's Plan</div>
+      <div class="section-label">Daily, Do These Every Day</div>
       <div class="card card-gold intro-card"><p id="daily-intro"></p></div>
       <div class="prog-pill" id="daily-progress">0 of 0 done today</div>
       <div id="daily-list"></div>
+
+      <!-- ROTATION SECTION -->
+      <div class="section-label" style="margin-top:28px;">Rotation, Pick a Few From Each Section</div>
+      <div class="card card-gold intro-card"><p id="pool-intro"></p></div>
+      <div class="prog-pill" id="pool-progress" onclick="poolProgressTap()">0 of 0 this rotation</div>
+      <div id="pool-list"></div>
 
       <!-- SESSION WRAP-UP -->
       <div class="card" style="margin-top:18px;">
@@ -509,23 +515,30 @@ body {
 const CLIENT_NAME = 'Richard';
 
 // --- DAILY SECTION ---------------------------------------------------
-const dailyIntro = 'This is your mobility library in three parts: Dynamic to warm up and move, Static holds, and a banded routine. Choose a few from each section throughout the week rather than doing it all every day. Keep everything pain-free, especially behind the knees. Tap an exercise for cues and video.';
+const dailyIntro = 'These are your daily anchors: a quick spine warm-up plus the hip and floor-to-stand work that matters most for your goals. Do all of these every day. Keep everything pain-free, especially behind the knees. Tap an exercise for cues and video.';
 const dailyExercises = [
-  // ===== DYNAMIC =====
   { name: 'Cat-Cow', sec: 'Dynamic', rx: '8 to 10 reps', log: false, video: 'cat-cows.mp4',
     cues: ['Start on your hands and knees in a tabletop position.', 'Drop your belly and lift your chest and tailbone to arch into cow.', 'Then round your back up toward the ceiling, tucking your chin and tailbone, into cat.', 'Move slowly and smoothly with your breath, letting the motion flow through your whole spine.'] },
-  { name: 'Open Books', sec: 'Dynamic', rx: '6 to 8 reps per side', log: false, video: 'open-books.mp4',
-    cues: ['Lie on your side with your knees bent up toward your chest and both arms stretched out in front at shoulder height, palms together.', 'Keeping your knees down, lift the top arm and rotate it up and over to open your chest toward the ceiling, following your hand with your eyes.', 'Let the rotation come from your mid back. Go as far as you comfortably can, then return.', 'Move slowly and breathe into the stretch.'] },
-  { name: 'Thread the Needle', sec: 'Dynamic', rx: '5 sec hold · 5 to 10 reps per side', log: false, video: 'thread-the-needle.mp4',
-    cues: ['Start on hands and knees in a tabletop position.', 'Reach one arm under and across your body, lowering your shoulder and ear toward the floor.', 'Let your chest rotate open as your arm threads through. Hold and breathe into the stretch.', 'Return to start and switch sides. Let the rotation come from the thoracic spine, not the low back.'] },
   { name: '90/90 Hip Switches', sec: 'Dynamic', rx: '8 to 10 switches', log: false, video: '',
     cues: ['Sit on the floor with one leg bent in front at 90 degrees and the other bent out to the side at 90 degrees.', 'Keeping your chest tall, rotate both knees across to the other side, switching the front and back legs.', 'Move slowly and let the motion come from the hips, not the low back.', 'This opens up both internal and external rotation of the hips.'] },
-  { name: 'Quadruped Rock-Backs', sec: 'Dynamic', rx: '10 reps · pain-free range', log: false, video: 'quadruped-rock-back.mp4',
-    cues: ['Start on your hands and knees in a tabletop position with a flat back.', 'Keeping your back flat, gently rock your hips back toward your heels only as far as is comfortable.', 'Rock back only to a pain-free range. Do not push into any pulling or pinching behind the knees.', 'Return to the start and repeat, letting the range improve over time.'] },
   { name: 'Hip CARs', sec: 'Dynamic', rx: '5 circles each direction · each leg', log: false, video: '',
     cues: ['On your hands and knees, lift one knee out to the side like opening a gate.', 'Slowly draw the biggest circle you can with that knee: up and out, around to the back, then down and through.', 'Keep the rest of your body still and your core braced. Move slowly and with control.', 'Do a few circles each direction, then switch legs.'] },
   { name: '90/90 Get-Up (Progressions)', sec: 'Dynamic', rx: 'work through the progressions · 5 reps per side', log: false, video: '',
     cues: ['This is a goal we build toward. Start with whatever help you need, including your hands and a sturdy chair. Using your hands is expected at first.', 'Level 1: sit on the edge of a low chair or couch and practice standing up and lowering back down with control, using your hands as much as you need.', 'Level 2: from the floor, set yourself up in a 90/90 position however you can. Use your hands to help press up to tall kneeling, then step one foot up and stand.', 'Level 3: use less hand support each time and start from a lower surface, working toward standing from the floor without your hands.', 'This also builds the glute strength needed to get out of the position, so progress it slowly and keep it pain-free.'] },
+  { name: 'Deep Squat Hold, Heels Elevated', sec: 'Static', rx: '30 to 60 sec hold · heels elevated · pain-free', log: false, video: '', sketch: 'deep-squat-hold.png',
+    cues: ['Set your heels on a small plate or rolled mat and place a yoga block behind you under where your hips will sit.', 'Sink down into a deep squat and sit back onto the block so it supports your hips, letting your weight settle between your knees.', 'Stay in a range that is completely pain-free, especially behind the knees. Gently press your knees out with your elbows.', 'Hold and breathe. We will lower the block and the heel height as your mobility improves.'] }
+];
+
+// --- ROTATION SECTION ------------------------------------------------
+const poolIntro = 'Pick 3 to 4 from this pool each day, a couple from each section across the week, so you cover everything without a long session. The list carries over day to day and resets once you have worked through it all. Keep everything pain-free.';
+const poolExercises = [
+  // ===== DYNAMIC =====
+  { name: 'Open Books', sec: 'Dynamic', rx: '6 to 8 reps per side', log: false, video: 'open-books.mp4',
+    cues: ['Lie on your side with your knees bent up toward your chest and both arms stretched out in front at shoulder height, palms together.', 'Keeping your knees down, lift the top arm and rotate it up and over to open your chest toward the ceiling, following your hand with your eyes.', 'Let the rotation come from your mid back. Go as far as you comfortably can, then return.', 'Move slowly and breathe into the stretch.'] },
+  { name: 'Thread the Needle', sec: 'Dynamic', rx: '5 sec hold · 5 to 10 reps per side', log: false, video: 'thread-the-needle.mp4',
+    cues: ['Start on hands and knees in a tabletop position.', 'Reach one arm under and across your body, lowering your shoulder and ear toward the floor.', 'Let your chest rotate open as your arm threads through. Hold and breathe into the stretch.', 'Return to start and switch sides. Let the rotation come from the thoracic spine, not the low back.'] },
+  { name: 'Quadruped Rock-Backs', sec: 'Dynamic', rx: '10 reps · pain-free range', log: false, video: 'quadruped-rock-back.mp4',
+    cues: ['Start on your hands and knees in a tabletop position with a flat back.', 'Keeping your back flat, gently rock your hips back toward your heels only as far as is comfortable.', 'Rock back only to a pain-free range. Do not push into any pulling or pinching behind the knees.', 'Return to the start and repeat, letting the range improve over time.'] },
   { name: 'Kneeling to Standing with Leg Swing', sec: 'Dynamic', rx: '5 reps per side', log: false, video: '',
     cues: ['Start in a tall kneeling position on both knees.', 'Swing one leg up and around to plant that foot flat out in front of you.', 'Drive through the front foot to stand all the way up, keeping your chest tall.', 'Lower back down with control and alternate sides. Work toward doing it without your hands.'] },
   // ===== STATIC =====
@@ -545,8 +558,6 @@ const dailyExercises = [
     cues: ['Sit tall on a chair or the floor with your knee bent to about 90 degrees.', 'Keeping your thigh still, let your lower leg swing outward so your foot moves away from your body, turning the hip inward.', 'Gently guide the ankle to increase the stretch, feeling it deep in the hip.', 'Hold at a comfortable stretch and breathe. Do not force it or let your pelvis lift.'] },
   { name: "Modified Child's Pose", sec: 'Static', rx: '30 to 60 sec · pain-free', log: false, video: 'child-s-pose.mp4',
     cues: ['Kneel and sit your hips back toward your heels, reaching your arms forward on the floor.', 'If this bothers your knees, sit back only partway, place a rolled towel behind the knees, or elevate your hips on a cushion. Keep it pain-free.', 'Walk your hands out to one side, then the other, to feel the stretch along each side of your back and lats.', 'Breathe and relax into whatever range is comfortable. We are building toward a fuller position over time.'] },
-  { name: 'Deep Squat Hold, Heels Elevated', sec: 'Static', rx: '30 to 60 sec hold · heels elevated · pain-free', log: false, video: '', sketch: 'deep-squat-hold.png',
-    cues: ['Set your heels on a small plate or rolled mat and place a yoga block behind you under where your hips will sit.', 'Sink down into a deep squat and sit back onto the block so it supports your hips, letting your weight settle between your knees.', 'Stay in a range that is completely pain-free, especially behind the knees. Gently press your knees out with your elbows.', 'Hold and breathe. We will lower the block and the heel height as your mobility improves.'] },
   { name: 'Hamstring Stretch with Strap', sec: 'Static', rx: '30 sec hold · 3 reps · each side', log: false, video: '', sketch: 'hamstring-strap.png',
     cues: ['Lie on your back and loop a strap around the arch of one foot.', 'Keeping that knee mostly straight, raise the leg up until you feel a gentle stretch behind the thigh.', 'Keep the other leg relaxed and your low back flat. Do not force it.', 'Hold and breathe. Ease off if you feel anything behind the knee.'] },
   // ===== MOBILITY BAND =====
@@ -557,10 +568,6 @@ const dailyExercises = [
   { name: 'Banded Knee Flexion Mobilization', sec: 'Mobility Band', rx: '10 reps · pain-free range · each side', log: false, video: '',
     cues: ['Anchor a band low behind you and loop it high around the back of the thigh, just below the glute.', 'On hands and knees or in a half-kneel, let the band pull your thigh back as you gently sit your hips back to bend the knee.', 'Rock into knee bend only as far as is completely pain-free. The band creates space in the joint as you flex.', 'Back off immediately if you feel anything behind the knee. We build range gradually.'] }
 ];
-
-// --- ROTATION SECTION (unused for this patient) ----------------------
-const poolIntro = '';
-const poolExercises = [];
 
 // --- GOALS -----------------------------------------------------------
 const goals = [
@@ -667,14 +674,17 @@ function doneCount(section) {
 function renderToday() {
   document.getElementById('client-name-hero').textContent = CLIENT_NAME;
   document.getElementById('daily-intro').textContent = dailyIntro;
-  var __all = sectionData('daily');
+  document.getElementById('pool-intro').textContent = poolIntro;
+  document.getElementById('daily-list').innerHTML = sectionData('daily').map(function(ex, i) { return exerciseCard('daily', i, ex); }).join('');
+  var __pool = sectionData('pool');
   var __secs = ['Dynamic', 'Static', 'Mobility Band'];
-  document.getElementById('daily-list').innerHTML = __secs.map(function(sname) {
-    var rows = __all.map(function(ex, i) { return { ex: ex, i: i }; }).filter(function(o) { return (o.ex.sec || 'Dynamic') === sname; });
+  document.getElementById('pool-list').innerHTML = __secs.map(function(sname) {
+    var rows = __pool.map(function(ex, i) { return { ex: ex, i: i }; }).filter(function(o) { return (o.ex.sec || 'Dynamic') === sname; });
     if (!rows.length) return '';
-    return '<div class="section-label" style="margin-top:22px;">' + sname + '</div>' + rows.map(function(o) { return exerciseCard('daily', o.i, o.ex); }).join('');
+    return '<div class="section-label" style="margin-top:22px;">' + sname + '</div>' + rows.map(function(o) { return exerciseCard('pool', o.i, o.ex); }).join('');
   }).join('');
   updateProgress('daily');
+  updateProgress('pool');
   document.getElementById('session-notes').value = hepLog['s-' + todayKey() + '-notes'] || '';
 }
 
